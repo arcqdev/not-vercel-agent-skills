@@ -120,4 +120,4 @@ When adding or modifying rules:
 
 ## Acknowledgments
 
-Originally created by [@shuding](https://x.com/shuding) at [Vercel](https://vercel.com).
+Originally created by [@shuding](https://x.com/shuding).

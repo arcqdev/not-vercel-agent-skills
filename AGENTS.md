@@ -4,7 +4,7 @@ This file provides guidance to AI coding agents (Claude Code, Cursor, Copilot, e
 
 ## Repository Overview
 
-A collection of skills for Claude.ai and Claude Code for working with Vercel deployments. Skills are packaged instructions and scripts that extend Claude's capabilities.
+A collection of skills for Claude.ai and Claude Code. Skills are packaged instructions and scripts that extend Claude's capabilities.
 
 ## Creating a New Skill
 
@@ -21,7 +21,7 @@ skills/
 
 ### Naming Conventions
 
-- **Skill directory**: `kebab-case` (e.g., `vercel-deploy`, `log-monitor`)
+- **Skill directory**: `kebab-case` (e.g., `log-monitor`, `react-best-practices`)
 - **SKILL.md**: Always uppercase, always this exact filename
 - **Scripts**: `kebab-case.sh` (e.g., `deploy.sh`, `fetch-logs.sh`)
 - **Zip file**: Must match directory name exactly: `{skill-name}.zip`

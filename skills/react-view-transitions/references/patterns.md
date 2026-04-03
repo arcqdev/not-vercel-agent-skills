@@ -84,12 +84,12 @@ export default function ItemGrid({ items }) {
 Use `as const` arrays and derived types to prevent ID clashes:
 
 ```tsx
-const transitionTypes = ['default', 'transition-to-detail', 'transition-to-list'] as const;
+const routeTypes = ['default', 'detail', 'list'] as const;
 const animationTypes = ['auto', 'none', 'animate-slide-from-left', 'animate-slide-from-right'] as const;
 
-type TransitionType = (typeof transitionTypes)[number];
+type RouteType = (typeof routeTypes)[number];
 type AnimationType = (typeof animationTypes)[number];
-type TransitionMap = { default: AnimationType } & Partial<Record<Exclude<TransitionType, 'default'>, AnimationType>>;
+type TransitionMap = { default: AnimationType } & Partial<Record<Exclude<RouteType, 'default'>, AnimationType>>;
 
 export function HorizontalTransition({ children, enter, exit }: {
   children: React.ReactNode;

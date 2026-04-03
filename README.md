@@ -8,19 +8,16 @@ Skills follow the [Agent Skills](https://agentskills.io/) format.
 
 ### react-best-practices
 
-React and Next.js performance optimization guidelines from Vercel Engineering. Contains 40+ rules across 8 categories, prioritized by impact.
+React performance optimization guidelines focused on framework-agnostic component, rendering, and JavaScript patterns.
 
 **Use when:**
-- Writing new React components or Next.js pages
-- Implementing data fetching (client or server-side)
+- Writing new React components
 - Reviewing code for performance issues
 - Optimizing bundle size or load times
 
 **Categories covered:**
 - Eliminating waterfalls (Critical)
 - Bundle size optimization (Critical)
-- Server-side performance (High)
-- Client-side data fetching (Medium-High)
 - Re-render optimization (Medium)
 - Rendering performance (Medium)
 - JavaScript micro-optimizations (Low-Medium)
@@ -70,14 +67,13 @@ React Native best practices optimized for AI agents. Contains 16 rules across 7 
 
 ### react-view-transitions
 
-Implement smooth, native-feeling animations using React's View Transition API. Covers the `<ViewTransition>` component, `addTransitionType`, transition types, and Next.js integration including the `transitionTypes` prop on `next/link`.
+Implement smooth, native-feeling animations using React's View Transition API. Covers the `<ViewTransition>` component, `addTransitionType`, transition types, and shared element transitions without framework-specific routing assumptions.
 
 **Use when:**
 - Adding page transitions or route animations
 - Animating enter/exit of components
 - Creating shared element transitions (list-to-detail morphing)
 - Implementing directional (forward/back) navigation animations
-- Integrating view transitions in Next.js App Router
 - Animating list reorder or Suspense fallback reveals
 
 **Topics covered:**
@@ -86,7 +82,6 @@ Implement smooth, native-feeling animations using React's View Transition API. C
 - View Transition Classes and CSS pseudo-elements
 - Shared element transitions with the `name` prop
 - JavaScript animations via Web Animations API
-- Next.js `transitionTypes` prop on `next/link`
 - Ready-to-use CSS animation recipes (fade, slide, scale, flip)
 - Accessibility (`prefers-reduced-motion`)
 
@@ -106,40 +101,10 @@ React composition patterns that scale. Helps avoid boolean prop proliferation th
 - Composing internals for flexibility
 - Avoiding prop drilling
 
-### vercel-deploy-claimable
-
-Deploy applications and websites to Vercel instantly. Designed for use with claude.ai and Claude Desktop to enable deployments directly from conversations. Deployments are "claimable" - users can transfer ownership to their own Vercel account.
-
-**Use when:**
-- "Deploy my app"
-- "Deploy this to production"
-- "Push this live"
-- "Deploy and give me the link"
-
-**Features:**
-- Auto-detects 40+ frameworks from `package.json`
-- Returns preview URL (live site) and claim URL (transfer ownership)
-- Handles static HTML projects automatically
-- Excludes `node_modules` and `.git` from uploads
-
-**How it works:**
-1. Packages your project into a tarball
-2. Detects framework (Next.js, Vite, Astro, etc.)
-3. Uploads to deployment service
-4. Returns preview URL and claim URL
-
-**Output:**
-```
-Deployment successful!
-
-Preview URL: https://skill-deploy-abc123.vercel.app
-Claim URL:   https://vercel.com/claim-deployment?code=...
-```
-
 ## Installation
 
 ```bash
-npx skills add vercel-labs/agent-skills
+cp -r skills/* ~/.claude/skills/
 ```
 
 ## Usage
@@ -148,13 +113,10 @@ Skills are automatically available once installed. The agent will use them when 
 
 **Examples:**
 ```
-Deploy my app
-```
-```
 Review this React component for performance issues
 ```
 ```
-Help me optimize this Next.js page
+Help me optimize this React page
 ```
 
 ## Skill Structure

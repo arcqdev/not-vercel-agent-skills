@@ -169,38 +169,6 @@
   },
   {
     "ruleId": "",
-    "ruleTitle": "Avoid Barrel File Imports",
-    "type": "good",
-    "code": "// Keep the standard imports - Next.js transforms them to direct imports\nimport { Check, X, Menu } from 'lucide-react'\n// Full TypeScript support, no manual path wrangling",
-    "language": "tsx",
-    "description": "Correct - Next.js 13.5+ (recommended) example for Avoid Barrel File Imports"
-  },
-  {
-    "ruleId": "",
-    "ruleTitle": "Avoid Barrel File Imports",
-    "type": "good",
-    "code": "import Button from '@mui/material/Button'\nimport TextField from '@mui/material/TextField'\n// Loads only what you use",
-    "language": "tsx",
-    "description": "Correct - Direct imports (non-Next.js projects) example for Avoid Barrel File Imports"
-  },
-  {
-    "ruleId": "",
-    "ruleTitle": "Defer Non-Critical Third-Party Libraries",
-    "type": "bad",
-    "code": "import { Analytics } from '@vercel/analytics/react'\n\nexport default function RootLayout({ children }) {\n  return (\n    <html>\n      <body>\n        {children}\n        <Analytics />\n      </body>\n    </html>\n  )\n}",
-    "language": "tsx",
-    "description": "blocks initial bundle"
-  },
-  {
-    "ruleId": "",
-    "ruleTitle": "Defer Non-Critical Third-Party Libraries",
-    "type": "good",
-    "code": "import dynamic from 'next/dynamic'\n\nconst Analytics = dynamic(\n  () => import('@vercel/analytics/react').then(m => m.Analytics),\n  { ssr: false }\n)\n\nexport default function RootLayout({ children }) {\n  return (\n    <html>\n      <body>\n        {children}\n        <Analytics />\n      </body>\n    </html>\n  )\n}",
-    "language": "tsx",
-    "description": "loads after hydration"
-  },
-  {
-    "ruleId": "",
     "ruleTitle": "Dynamic Imports for Heavy Components",
     "type": "bad",
     "code": "import { MonacoEditor } from './monaco-editor'\n\nfunction CodePanel({ code }: { code: string }) {\n  return <MonacoEditor value={code} />\n}",
@@ -209,27 +177,11 @@
   },
   {
     "ruleId": "",
-    "ruleTitle": "Dynamic Imports for Heavy Components",
-    "type": "good",
-    "code": "import dynamic from 'next/dynamic'\n\nconst MonacoEditor = dynamic(\n  () => import('./monaco-editor').then(m => m.MonacoEditor),\n  { ssr: false }\n)\n\nfunction CodePanel({ code }: { code: string }) {\n  return <MonacoEditor value={code} />\n}",
-    "language": "tsx",
-    "description": "Monaco loads on demand"
-  },
-  {
-    "ruleId": "",
     "ruleTitle": "Deduplicate Global Event Listeners",
     "type": "bad",
     "code": "function useKeyboardShortcut(key: string, callback: () => void) {\n  useEffect(() => {\n    const handler = (e: KeyboardEvent) => {\n      if (e.metaKey && e.key === key) {\n        callback()\n      }\n    }\n    window.addEventListener('keydown', handler)\n    return () => window.removeEventListener('keydown', handler)\n  }, [key, callback])\n}",
     "language": "tsx",
     "description": "N instances = N listeners"
-  },
-  {
-    "ruleId": "",
-    "ruleTitle": "Deduplicate Global Event Listeners",
-    "type": "good",
-    "code": "import useSWRSubscription from 'swr/subscription'\n\n// Module-level Map to track callbacks per key\nconst keyCallbacks = new Map<string, Set<() => void>>()\n\nfunction useKeyboardShortcut(key: string, callback: () => void) {\n  // Register this callback in the Map\n  useEffect(() => {\n    if (!keyCallbacks.has(key)) {\n      keyCallbacks.set(key, new Set())\n    }\n    keyCallbacks.get(key)!.add(callback)\n\n    return () => {\n      const set = keyCallbacks.get(key)\n      if (set) {\n        set.delete(callback)\n        if (set.size === 0) {\n          keyCallbacks.delete(key)\n        }\n      }\n    }\n  }, [key, callback])\n\n  useSWRSubscription('global-keydown', () => {\n    const handler = (e: KeyboardEvent) => {\n      if (e.metaKey && keyCallbacks.has(e.key)) {\n        keyCallbacks.get(e.key)!.forEach(cb => cb())\n      }\n    }\n    window.addEventListener('keydown', handler)\n    return () => window.removeEventListener('keydown', handler)\n  })\n}\n\nfunction Profile() {\n  // Multiple shortcuts will share the same listener\n  useKeyboardShortcut('p', () => { /* ... */ }) \n  useKeyboardShortcut('k', () => { /* ... */ })\n  // ...\n}",
-    "language": "tsx",
-    "description": "N instances = 1 listener"
   },
   {
     "ruleId": "",
@@ -262,22 +214,6 @@
     "code": "useEffect(() => {\n  const handleTouch = (e: TouchEvent) => console.log(e.touches[0].clientX)\n  const handleWheel = (e: WheelEvent) => console.log(e.deltaY)\n  \n  document.addEventListener('touchstart', handleTouch, { passive: true })\n  document.addEventListener('wheel', handleWheel, { passive: true })\n  \n  return () => {\n    document.removeEventListener('touchstart', handleTouch)\n    document.removeEventListener('wheel', handleWheel)\n  }\n}, [])",
     "language": "typescript",
     "description": "Correct example for Use Passive Event Listeners for Scrolling Performance"
-  },
-  {
-    "ruleId": "",
-    "ruleTitle": "Use SWR for Automatic Deduplication",
-    "type": "bad",
-    "code": "function UserList() {\n  const [users, setUsers] = useState([])\n  useEffect(() => {\n    fetch('/api/users')\n      .then(r => r.json())\n      .then(setUsers)\n  }, [])\n}",
-    "language": "tsx",
-    "description": "no deduplication, each instance fetches"
-  },
-  {
-    "ruleId": "",
-    "ruleTitle": "Use SWR for Automatic Deduplication",
-    "type": "good",
-    "code": "import useSWR from 'swr'\n\nfunction UserList() {\n  const { data: users } = useSWR('/api/users', fetcher)\n}",
-    "language": "tsx",
-    "description": "multiple instances share one request"
   },
   {
     "ruleId": "",
@@ -617,14 +553,6 @@
   },
   {
     "ruleId": "",
-    "ruleTitle": "Use defer or async on Script Tags",
-    "type": "good",
-    "code": "import Script from 'next/script'\n\nexport default function Page() {\n  return (\n    <>\n      <Script src=\"https://example.com/analytics.js\" strategy=\"afterInteractive\" />\n      <Script src=\"/scripts/utils.js\" strategy=\"beforeInteractive\" />\n    </>\n  )\n}",
-    "language": "tsx",
-    "description": "non-blocking"
-  },
-  {
-    "ruleId": "",
     "ruleTitle": "Optimize SVG Precision",
     "type": "bad",
     "code": "<path d=\"M 10.293847 20.847362 L 30.938472 40.192837\" />",
@@ -921,14 +849,6 @@
   },
   {
     "ruleId": "",
-    "ruleTitle": "Use after() for Non-Blocking Operations",
-    "type": "good",
-    "code": "import { after } from 'next/server'\nimport { headers, cookies } from 'next/headers'\nimport { logUserAction } from '@/app/utils'\n\nexport async function POST(request: Request) {\n  // Perform mutation\n  await updateDatabase(request)\n  \n  // Log after response is sent\n  after(async () => {\n    const userAgent = (await headers()).get('user-agent') || 'unknown'\n    const sessionCookie = (await cookies()).get('session-id')?.value || 'anonymous'\n    \n    logUserAction({ sessionCookie, userAgent })\n  })\n  \n  return new Response(JSON.stringify({ status: 'success' }), {\n    status: 200,\n    headers: { 'Content-Type': 'application/json' }\n  })\n}",
-    "language": "tsx",
-    "description": "non-blocking"
-  },
-  {
-    "ruleId": "",
     "ruleTitle": "Authenticate Server Actions Like API Routes",
     "type": "bad",
     "code": "'use server'\n\nexport async function deleteUser(userId: string) {\n  // Anyone can call this! No auth check\n  await db.user.delete({ where: { id: userId } })\n  return { success: true }\n}",
@@ -974,30 +894,6 @@
     "code": "// RSC: send once\n<ClientList usernames={usernames} />\n\n// Client: transform there\n'use client'\nconst sorted = useMemo(() => [...usernames].sort(), [usernames])",
     "language": "tsx",
     "description": "sends 3 strings"
-  },
-  {
-    "ruleId": "",
-    "ruleTitle": "Hoist Static I/O to Module Level",
-    "type": "bad",
-    "code": "// app/api/og/route.tsx\nimport { ImageResponse } from 'next/og'\n\nexport async function GET(request: Request) {\n  // Runs on EVERY request - expensive!\n  const fontData = await fetch(\n    new URL('./fonts/Inter.ttf', import.meta.url)\n  ).then(res => res.arrayBuffer())\n\n  const logoData = await fetch(\n    new URL('./images/logo.png', import.meta.url)\n  ).then(res => res.arrayBuffer())\n\n  return new ImageResponse(\n    <div style={{ fontFamily: 'Inter' }}>\n      <img src={logoData} />\n      Hello World\n    </div>,\n    { fonts: [{ name: 'Inter', data: fontData }] }\n  )\n}",
-    "language": "typescript",
-    "description": "reads font file on every request"
-  },
-  {
-    "ruleId": "",
-    "ruleTitle": "Hoist Static I/O to Module Level",
-    "type": "good",
-    "code": "// app/api/og/route.tsx\nimport { ImageResponse } from 'next/og'\n\n// Module-level: runs ONCE when module is first imported\nconst fontData = fetch(\n  new URL('./fonts/Inter.ttf', import.meta.url)\n).then(res => res.arrayBuffer())\n\nconst logoData = fetch(\n  new URL('./images/logo.png', import.meta.url)\n).then(res => res.arrayBuffer())\n\nexport async function GET(request: Request) {\n  // Await the already-started promises\n  const [font, logo] = await Promise.all([fontData, logoData])\n\n  return new ImageResponse(\n    <div style={{ fontFamily: 'Inter' }}>\n      <img src={logo} />\n      Hello World\n    </div>,\n    { fonts: [{ name: 'Inter', data: font }] }\n  )\n}",
-    "language": "typescript",
-    "description": "loads once at module initialization"
-  },
-  {
-    "ruleId": "",
-    "ruleTitle": "Hoist Static I/O to Module Level",
-    "type": "good",
-    "code": "// app/api/og/route.tsx\nimport { ImageResponse } from 'next/og'\nimport { readFileSync } from 'fs'\nimport { join } from 'path'\n\n// Synchronous read at module level - blocks only during module init\nconst fontData = readFileSync(\n  join(process.cwd(), 'public/fonts/Inter.ttf')\n)\n\nconst logoData = readFileSync(\n  join(process.cwd(), 'public/images/logo.png')\n)\n\nexport async function GET(request: Request) {\n  return new ImageResponse(\n    <div style={{ fontFamily: 'Inter' }}>\n      <img src={logoData} />\n      Hello World\n    </div>,\n    { fonts: [{ name: 'Inter', data: fontData }] }\n  )\n}",
-    "language": "typescript",
-    "description": "synchronous fs at module level"
   },
   {
     "ruleId": "",
